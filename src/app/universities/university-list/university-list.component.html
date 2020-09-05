@@ -1,0 +1,12 @@
+<mat-expansion-panel color="primary" *ngFor="let university of universities">
+  <mat-expansion-panel-header>
+    <mat-panel-title>{{ university.name }}</mat-panel-title>
+  </mat-expansion-panel-header>
+  <mat-panel-description>
+    <div class="container">
+      <div class="row">
+        <p>Located: {{ university.city + ', ' + university.state }}</p>
+      </div>
+    </div>
+  </mat-panel-description>
+</mat-expansion-panel>
