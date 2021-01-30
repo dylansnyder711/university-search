@@ -7,17 +7,18 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-university-list',
   templateUrl: './university-list.component.html',
-  styleUrls: ['./university-list.component.css']
+  styleUrls: ['./university-list.component.css'],
 })
 export class UniversityListComponent implements OnInit, OnDestroy {
   private university: University;
   universities: University[] = [];
   private universitySub: Subscription;
 
-  constructor(private universitiesService: UniversitiesService) { }
+  constructor(private universitiesService: UniversitiesService) {}
 
   ngOnInit() {
-    this.universitySub = this.universitiesService.getResultsUpdateListener()
+    this.universitySub = this.universitiesService
+      .getResultsUpdateListener()
       .subscribe((universities: University[]) => {
         this.universities = universities;
       });
@@ -26,5 +27,4 @@ export class UniversityListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.universitySub.unsubscribe();
   }
-
 }

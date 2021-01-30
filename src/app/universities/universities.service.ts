@@ -2,15 +2,15 @@ import { OnInit, OnDestroy, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { University } from './university.model';
+import { ApiService } from '../api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UniversitiesService implements OnInit, OnDestroy{
-  API_URL = 'https://api.data.gov/ed/collegescorecard/v1/schools?api_key=PIOQeDUt30iXBdYCG4I9Yp6uuQgByKlANtbsoHmu';
   private resultsUpdated = new Subject<any>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private apiService: ApiService) {}
 
   ngOnInit() {
   }
@@ -20,17 +20,14 @@ export class UniversitiesService implements OnInit, OnDestroy{
   }
 
   setResults(formFields: any) {
-    let paramList: string = '&per_page=100&fields=school.name,school.city,school.state';
-    if(formFields.name) {
-      paramList += '&school.name=' + formFields.name;
-    }
-    if(formFields.state) {
-      paramList += '&school.state=' + formFields.state;
-    }
-    if(formFields.city) {
-      paramList += '&school.city=' + formFields.city;
-    }
-    this.getApiList(paramList)
+    let paramList: string = '&per_page=20&fields=school.name,school.city,school.state';
+    console.log('name: ' + formFields.name);
+    formFields.name ? paramList += '&school.name=' + formFields.name : paramList += '';
+    formFields.state ? paramList += '&school.state=' + formFields.state : paramList += '';
+    formFields.city ? paramList += '&school.city=' + formFields.city : paramList += '';
+
+    console.log(paramList);
+    this.apiService.getApiList(paramList)
       .subscribe((data) => {
         let searchList = [];
         for(let result of data.results){
@@ -43,12 +40,6 @@ export class UniversitiesService implements OnInit, OnDestroy{
         }
         this.resultsUpdated.next([...searchList]);
       });
-  }
-
-  getApiList(params?: string) {
-    return this.http.get<any>(
-      this.API_URL + params
-    );
   }
 
   ngOnDestroy() {
